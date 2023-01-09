@@ -1,0 +1,21 @@
+{{define "router.tmpl"}} package routes
+
+import (
+   "github.com/gin-gonic/gin"
+   "{{.ProjectName}}/middleware"
+   "{{.ProjectName}}/api"
+)
+
+
+func {{.StructName}}V1(r *gin.Engine){
+   v1 := r.Group("/v1")
+   v1.Use(middleware.AdminTokenAuth())
+
+   // from generator
+   v1.GET("/{{.APIRoute}}",api.List{{.StructName}})
+   v1.GET("/{{.APIRoute}}/:id", api.Get{{.StructName}}Detail)
+   v1.POST("/{{.APIRoute}}",api.Create{{.StructName}})
+   v1.PUT("/{{.APIRoute}}/:id",api.Update{{.StructName}})
+   v1.DELETE("/{{.APIRoute}}/:id",api.Delete{{.StructName}})
+}
+{{end}}

@@ -1,0 +1,250 @@
+{{define "service_test.tmpl"}} package {{.TableName}}
+
+
+import (
+	mock{{.StructName}} "{{.ProjectName}}/mock/{{.InternalPath}}{{.TableName}}"
+	"{{.ProjectName}}/models"
+	"{{.ProjectName}}/models/apireq"
+	"{{.ProjectName}}/pkg/er"
+	"{{.ProjectName}}/pkg/query_condition"
+	"testing"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
+)
+
+// Generate from template
+func TestServiceFindAll(t *testing.T) {
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+
+	mock{{.StructName}}Repo := mock{{.StructName}}.NewMockRepository(ctl)
+	srv{{.StructName}} := New{{.StructName}}Service(mock{{.StructName}}Repo)
+
+	mock{{.StructName}}s := []*models.{{.StructName}}{
+		{ //自行補充
+			Id: 1,
+		},
+	}
+
+	tests := []struct {
+		name           string
+		page           int64
+		perPage        int64
+		queryCondition query_condition.QueryCondition
+	}{
+		{ // test 1
+			name:           "test1",
+			page:           1,
+			perPage:        10,
+			queryCondition: query_condition.QueryCondition{},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			mock{{.StructName}}Repo.EXPECT().FindAll(gomock.Any(), gomock.Any(), gomock.Any()).Return(mock{{.StructName}}s, nil)
+			mock{{.StructName}}Repo.EXPECT().Count(gomock.Any()).Return(1, nil)
+			_, err := srv{{.StructName}}.FindAll(&apireq.List{{.StructName}}{Page: test.page, PerPage: test.perPage}, test.queryCondition)
+			assert.Nil(t, err)
+		})
+	}
+}
+
+// Generate from template
+func TestServiceFindOne(t *testing.T) {
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+
+	mock{{.StructName}}Repo := mock{{.StructName}}.NewMockRepository(ctl)
+	srv{{.StructName}} := New{{.StructName}}Service(mock{{.StructName}}Repo)
+
+	mock{{.StructName}}s := []*models.{{.StructName}}{
+		{ //自行補充
+			Id: 1,
+		},
+		{ //自行補充
+			Id: 0,
+		},
+	}
+
+	tests := []struct {
+		name  string
+		req   *apireq.Get{{.StructName}}Detail
+		found int // 0 = not found, 1 = found
+		err   error
+	}{
+		{ // test 1
+			name: "test1",
+			req: &apireq.Get{{.StructName}}Detail{
+				Id: 1,
+			},
+			found: 1,
+			err:   nil,
+		},
+		{ // test 2 not found
+			name: "test2",
+			req: &apireq.Get{{.StructName}}Detail{
+				Id: 2,
+			},
+			found: 0,
+			err:   &er.AppError{StatusCode: 404, Code: "500000", Msg: "{{.StructName}} not found.", CauseErr: error(nil)},
+		},
+	}
+	for i, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			mock{{.StructName}}Repo.EXPECT().FindOne(gomock.Any()).Return(mock{{.StructName}}s[i], test.found, nil)
+			_, err := srv{{.StructName}}.FindOne(test.req)
+			assert.Equal(t, test.err, err)
+		})
+	}
+}
+
+// Generate from template
+func TestServiceCreate(t *testing.T) {
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+
+	mock{{.StructName}}Repo := mock{{.StructName}}.NewMockRepository(ctl)
+	srv{{.StructName}} := New{{.StructName}}Service(mock{{.StructName}}Repo)
+
+	tests := []struct {
+		name      string
+		req       *apireq.Create{{.StructName}}
+		duplicate int
+		err       error
+	}{
+		{ // test 1
+			name:      "test1",
+			req:       &apireq.Create{{.StructName}}{},
+			duplicate: 0,
+			err:       nil,
+		},
+		{ // test 2 duplicate
+			name:      "test2",
+			req:       &apireq.Create{{.StructName}}{},
+			duplicate: 1,
+			err:       &er.AppError{StatusCode: 409, Code: "400410", Msg: "create {{.StructName}} duplicate error.", CauseErr: error(nil)},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			mock{{.StructName}}Repo.EXPECT().FindOne(gomock.Any()).Return(&models.{{.StructName}}{}, test.duplicate, nil)
+			if test.duplicate == 0 {
+				mock{{.StructName}}Repo.EXPECT().Insert(gomock.Any()).Return(nil)
+			}
+			err := srv{{.StructName}}.Create(test.req)
+			assert.Equal(t, test.err, err)
+		})
+	}
+}
+
+// Generate from template
+func TestServiceUpdate(t *testing.T) {
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+
+	mock{{.StructName}}Repo := mock{{.StructName}}.NewMockRepository(ctl)
+	srv{{.StructName}} := New{{.StructName}}Service(mock{{.StructName}}Repo)
+
+	mock{{.StructName}}s := []*models.{{.StructName}}{
+		{ //自行補充
+			Id: 1,
+		},
+		{ //自行補充
+			Id: 0,
+		},
+	}
+
+	tests := []struct {
+		name    string
+		req     *apireq.Update{{.StructName}}
+		found   int // 0 = not found, 1 = found
+		findErr error
+		err     error
+	}{
+		{ // test 1
+			name:    "test1",
+			req:     &apireq.Update{{.StructName}}{},
+			found:   0,
+			findErr: nil,
+			err:     nil,
+		},
+		{ // test 2 duplicate
+			name:    "test2",
+			req:     &apireq.Update{{.StructName}}{},
+			found:   1,
+			findErr: gorm.ErrRecordNotFound,
+			err:     &er.AppError{StatusCode: 404, Code: "500000", Msg: "{{.StructName}} not found.", CauseErr: (nil)},
+		},
+	}
+	for i, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			mock{{.StructName}}Repo.EXPECT().FindOne(gomock.Any()).Return(mock{{.StructName}}s[i], test.found, test.findErr)
+			if test.found == 0 {
+				// 如果可重複FindOne要刪掉(Generate from template)
+				mock{{.StructName}}Repo.EXPECT().FindOne(gomock.Any()).Return(&models.{{.StructName}}{}, 0, nil)
+				mock{{.StructName}}Repo.EXPECT().Update(gomock.Any()).Return(nil)
+			}
+			err := srv{{.StructName}}.Update(test.req)
+			assert.Equal(t, test.err, err)
+		})
+	}
+}
+
+// Generate from template
+func TestServiceDelete(t *testing.T) {
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+
+	mock{{.StructName}}Repo := mock{{.StructName}}.NewMockRepository(ctl)
+	srv{{.StructName}} := New{{.StructName}}Service(mock{{.StructName}}Repo)
+
+	mock{{.StructName}}s := []*models.{{.StructName}}{
+		{ //自行補充
+			Id: 1,
+		},
+		{ //自行補充
+			Id: 0,
+		},
+	}
+
+	tests := []struct {
+		name    string
+		req     *apireq.Delete{{.StructName}}
+		found   int // 0 = not found, 1 = found
+		findErr error
+		err     error
+	}{
+		{ // test 1
+			name: "test1",
+			req: &apireq.Delete{{.StructName}}{
+				Id: 1,
+			},
+			found:   1,
+			findErr: nil,
+			err:     nil,
+		},
+		{ // test 2 not found
+			name: "test2",
+			req: &apireq.Delete{{.StructName}}{
+				Id: 2,
+			},
+			found:   0,
+			findErr: gorm.ErrRecordNotFound,
+			err:     &er.AppError{StatusCode: 404, Code: "500000", Msg: "{{.StructName}} not found.", CauseErr: error(nil)},
+		},
+	}
+	for i, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			mock{{.StructName}}Repo.EXPECT().FindOne(gomock.Any()).Return(mock{{.StructName}}s[i], test.found, test.findErr)
+			if test.found != 0 {
+				mock{{.StructName}}Repo.EXPECT().Delete(gomock.Any()).Return(nil)
+			}
+			err := srv{{.StructName}}.Delete(test.req)
+			assert.Equal(t, test.err, err)
+		})
+	}
+}
+{{end}}

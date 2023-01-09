@@ -1,0 +1,11 @@
+{{define "model.tmpl"}}package models
+
+{{if .TimeField}}
+import "time"
+{{end}}
+
+type {{.StructName}} struct {
+  {{range .TableColumns}}{{.ModelField}} {{.Type}} `gorm:"column:{{.ColumnName}}{{if .ColumnComment}};comment:{{.ColumnComment}}{{end}}" json:"{{.Tag}}"`
+  {{end}}
+}
+{{end}}

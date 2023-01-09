@@ -1,0 +1,182 @@
+{{define "api.tmpl"}} package api
+
+
+import (
+   "github.com/gin-gonic/gin"
+   "{{.ProjectName}}/models/apireq"
+   "{{.ProjectName}}/pkg/er"
+   "{{.ProjectName}}/pkg/query_condition"
+)
+
+// List{{.StructName}}
+// @Summary List {{.StructName}} 獲取全部 {{.StructName}}
+// @Produce json
+// @Accept json
+// @Tags {{.StructName}}
+// @Security Bearer
+// @Param Bearer header string true "Admin JWT Token"
+// @Param page query int true "Which Page"
+// @Param per_page query int true "How many data per page"
+// @Success 200 {object} apires.ListAll{{.StructName}}
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/{{.APIRoute}} [GET]
+func List{{.StructName}}(c *gin.Context){
+   req := &apireq.List{{.StructName}}{}
+   if err := c.BindQuery(req); err != nil {
+      err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
+      _ = c.Error(err)
+      return
+   }
+
+   // need to change to what you want to query 
+   var reqCondition apireq.List{{.StructName}}QueryCondition
+	if err := c.BindQuery(&reqCondition); err != nil {
+      err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
+      _ = c.Error(err)
+      return
+   }
+	queryCondition := query_condition.QueryCondition{Condition: reqCondition}
+
+   // need to dependency injection
+   srv := Build{{.StructName}}Srv()
+   res, err := srv.FindAll(req, queryCondition)
+   if err != nil {
+      _ = c.Error(err)
+      return
+   }
+   c.JSON(200, res)
+}
+
+// Get{{.StructName}}Detail
+// @Summary Get{{.StructName}}Detail 獲取{{.StructName}}詳細資訊
+// @Produce json
+// @Accept json
+// @Tags {{.StructName}}
+// @Security Bearer
+// @Param Bearer header string true "Admin JWT Token"
+// @Param id path int true "{{.TableName}}_id"
+// @Success 200 {object} apires.{{.StructName}}
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/{{.APIRoute}}/{id} [GET]
+func Get{{.StructName}}Detail(c *gin.Context){
+   req := &apireq.Get{{.StructName}}Detail{}
+   err := c.BindUri(&req)
+	if err != nil {
+      err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(err)
+		return
+	}
+   // need to dependency injection
+   srv := Build{{.StructName}}Srv()
+   res, err := srv.FindOne(req)
+   if err != nil {
+      _ = c.Error(err)
+      return
+   }
+   c.JSON(200, res)
+}
+
+
+// Create{{.StructName}}
+// @Summary Create {{.StructName}} 新增{{.StructName}}
+// @Produce json
+// @Accept json
+// @Tags {{.StructName}}
+// @Security Bearer
+// @Param Bearer header string true "Admin JWT Token"
+// @Param Body body apireq.Create{{.StructName}} true "Request 新增 {{.StructName}}"
+// @Success 200 {string} string "{}"
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/{{.APIRoute}} [POST]
+func Create{{.StructName}}(c *gin.Context) {
+   req := &apireq.Create{{.StructName}}{}
+   if err := c.Bind(req); err != nil {
+      err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
+      _ = c.Error(err)
+      return
+   }
+   // need to dependency injection
+   srv := Build{{.StructName}}Srv()
+   err := srv.Create(req)
+   if err != nil {
+      _ = c.Error(err)
+      return
+   }
+   c.JSON(200, struct{}{})
+}
+
+// Update{{.StructName}}
+// @Summary Update {{.StructName}} 修改{{.StructName}}
+// @Produce json
+// @Accept json
+// @Tags {{.StructName}}
+// @Security Bearer
+// @Param Bearer header string true "Admin JWT Token"
+// @Param id path int true "{{.TableName}}_id"
+// @Param Body body apireq.Update{{.StructName}} true "Request 修改 {{.StructName}}"
+// @Success 200 {string} string "{}"
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/{{.APIRoute}}/{id} [PUT]
+func Update{{.StructName}}(c *gin.Context) {
+   req := &apireq.Update{{.StructName}}{}
+   
+   _ = c.Bind(req)
+   err:= c.BindUri(&req)
+   if err != nil {
+      err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
+      _ = c.Error(err)
+      return
+   }
+   // need to dependency injection
+   srv := Build{{.StructName}}Srv()
+   err = srv.Update(req)
+   if err != nil {
+      _ = c.Error(err)
+      return
+   }
+   c.JSON(200, struct{}{})
+}
+
+
+// Delete{{.StructName}}
+// @Summary Delete {{.StructName}} 刪除{{.StructName}}
+// @Produce json
+// @Accept json
+// @Tags {{.StructName}}
+// @Security Bearer
+// @Param Bearer header string true "Admin JWT Token"
+// @Param id path int true "{{.TableName}}_id"
+// @Success 200 {string} string "{}"
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/{{.APIRoute}}/{id} [DELETE]
+func Delete{{.StructName}}(c *gin.Context) {
+   req := &apireq.Delete{{.StructName}}{}
+   err := c.BindUri(&req)
+	if err != nil {
+      err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(err)
+		return
+	}
+   // need to dependency injection
+   srv := Build{{.StructName}}Srv()
+   err = srv.Delete(req)
+   if err != nil {
+      _ = c.Error(err)
+      return
+   }
+   c.JSON(200, struct{}{})
+}
+{{end}}

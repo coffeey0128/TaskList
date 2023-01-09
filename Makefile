@@ -13,3 +13,17 @@ migrate-up:
 migrate-down:
 	sql-migrate down -config=./migration/dbconfig.yml --env=localhost
 
+seed-flush:
+	# flush mysql
+	docker exec mysql mysql -uroot -psecret -e \
+	"SELECT CONCAT('TRUNCATE TABLE ', table_schema, '.', TABLE_NAME, ';') FROM INFORMATION_SCHEMA.TABLES \
+	WHERE table_schema IN ('task_list') AND TABLE_NAME != 'migrations'" | grep "task_list*" | xargs -I {} docker exec mysql mysql -uroot -psecret -e {}
+	# exec seeder
+	go run ./cmd/seeder/main.go	
+
+gen-mock:
+	mockgen -source=./internal/task/repository.go -destination=./mock/task/task_repository_mock.go -package=task_mock
+
+gen-crud:
+	go run ./code_gen/main.go
+	

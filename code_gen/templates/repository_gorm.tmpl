@@ -1,0 +1,80 @@
+{{define "repository_gorm.tmpl"}} package {{.TableName}}
+
+import (
+	"{{.ProjectName}}/models"
+	"{{.ProjectName}}/pkg/query_condition"
+	"gorm.io/gorm"
+)
+
+type Repository interface {
+	Insert(*models.{{.StructName}}) (err error)
+	FindAll(page, perPage int64, queryCondition query_condition.QueryCondition) (record []*models.{{.StructName}}, err error)
+	FindOne(*models.{{.StructName}}) (record *models.{{.StructName}}, rowaffected int, err error)
+	Update(condition *models.{{.StructName}}) (err error)
+	Delete(condition *models.{{.StructName}}) (err error)
+	Count(queryCondition query_condition.QueryCondition) (int, error)
+}
+
+type {{.StructName}}Repo struct {
+	orm *gorm.DB
+}
+
+func New{{.StructName}}Repo(orm *gorm.DB) Repository {
+	return &{{.StructName}}Repo{orm: orm}
+}
+
+// Generate from template
+func (r *{{.StructName}}Repo) Insert(condition *models.{{.StructName}}) (err error) {
+    result := r.orm.Create(condition)
+	if err = result.Error; err != nil {
+	    return  err
+	}
+	return nil
+}
+
+
+// Generate from template
+func (r *{{.StructName}}Repo) FindAll(page, perPage int64, queryCondition query_condition.QueryCondition) (record []*models.{{.StructName}}, err error) {
+	offset := (page - 1) * perPage
+    result := r.orm.Where(queryCondition.ToSQL()).Offset(int(offset)).Limit(int(perPage)).Find(&record)
+	if err = result.Error; err != nil {
+	    return nil, err
+	}
+	return record, nil
+}
+
+func (r *{{.StructName}}Repo) FindOne(condition *models.{{.StructName}}) (record *models.{{.StructName}},rowaffected int, err error) {
+	record = new(models.{{.StructName}})
+	result := r.orm.First(record,condition)
+	return record, int(result.RowsAffected), result.Error
+}
+
+
+// Generate from template
+func (r *{{.StructName}}Repo) Update(condition *models.{{.StructName}}) (err error) {
+    result := r.orm.Select("*").Omit("created_at").Updates(condition)
+	if err = result.Error; err != nil {
+	    return err
+	}
+	return nil
+}
+
+
+// Generate from template
+func (r *{{.StructName}}Repo) Delete(condition *models.{{.StructName}}) (err error) {
+    result := r.orm.Delete(condition)
+	if err = result.Error; err != nil {
+	    return err
+	}
+	return nil
+}
+
+func (r *{{.StructName}}Repo) Count(queryCondition query_condition.QueryCondition) (int, error) {
+	var count int64
+	err := r.orm.Model(&models.{{.StructName}}{}).{{if .DisableField}}Where("is_disable=0").{{end}}Where(queryCondition.ToSQL()).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
+}
+{{end}}

@@ -1,0 +1,18 @@
+{{define "apires.tmpl"}} package apires
+
+{{if .TimeField}}
+import "time"
+{{end}}
+
+type {{.StructName}} struct {
+   {{range .TableColumns}}{{.ModelField}} {{.Type}} `json:"{{.Tag}}"`
+   {{end}}
+}
+
+type List{{.StructName}} struct {
+   {{.StructName}}s []{{.StructName}} `json:"{{.TableName}}s"`
+   CurrentPage int    `json:"current_page"`
+	PerPage     int    `json:"per_page"`
+	Total       int    `json:"total"`
+}
+{{end}}

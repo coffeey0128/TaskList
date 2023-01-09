@@ -1,0 +1,142 @@
+{{define "service.tmpl"}} package {{.TableName}}
+
+import (
+	"{{.ProjectName}}/models"
+	"{{.ProjectName}}/models/apireq"
+	"{{.ProjectName}}/models/apires"
+	"{{.ProjectName}}/pkg/er"
+	"{{.ProjectName}}/pkg/query_condition"
+
+	"github.com/jinzhu/copier"
+	"gorm.io/gorm"
+)
+
+type Service interface {
+	FindAll(req *apireq.List{{.StructName}}, queryCondition query_condition.QueryCondition) (*apires.List{{.StructName}}, error)
+	FindOne(req *apireq.Get{{.StructName}}Detail) (*apires.{{.StructName}}, error)
+	Create(req *apireq.Create{{.StructName}}) (err error)
+	Update(req *apireq.Update{{.StructName}}) (err error)
+	Delete(req *apireq.Delete{{.StructName}}) (err error)
+}
+
+
+type {{.StructName}}Service struct {
+	repo Repository
+}
+
+func New{{.StructName}}Service(repo Repository) Service {
+	return &{{.StructName}}Service{repo: repo}
+}
+
+// Generate from template
+func (s *{{.StructName}}Service) FindAll(req *apireq.List{{.StructName}}, queryCondition query_condition.QueryCondition) (*apires.List{{.StructName}},error) {
+    result, err := s.repo.FindAll(req.Page, req.PerPage, queryCondition)
+	if err != nil {
+		return nil, er.NewAppErr(500, er.UnknownError, "ListAll {{.StructName}} error.", err)
+	}
+	totalCount, err := s.repo.Count(queryCondition)
+	if err != nil {
+		return nil, er.NewAppErr(500, er.UnknownError, "Count {{.StructName}} error.", err)
+	}
+	// need to transform models to apires
+	results := make([]apires.{{.StructName}}, 0)
+	if err := copier.Copy(&results, &result); err != nil {
+		return nil, er.NewAppErr(500, er.UnknownError, "copy result to *apires.{{.StructName}} error.", err)
+	}
+	response := &apires.List{{.StructName}}{
+		{{.StructName}}s : results,
+		CurrentPage: int(req.Page),
+		PerPage: int(req.PerPage),
+		Total:  int(totalCount),
+	}
+	return response, nil
+}
+
+func (s *{{.StructName}}Service) FindOne(req *apireq.Get{{.StructName}}Detail) (*apires.{{.StructName}}, error) {
+	condition := &{{.ModelPackageName}}.{{.StructName}}{Id: req.Id}
+	record, rows, err := s.repo.FindOne(condition)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, er.NewAppErr(500, er.UnknownError, "get {{.StructName}} error.", err)
+	}
+	if rows == 0 {
+		return nil, er.NewAppErr(404, er.UnknownError, "{{.StructName}} not found.", err)
+	}
+	res := &apires.{{.StructName}}{}
+	if err := copier.Copy(res, record); err != nil {
+		return nil, er.NewAppErr(500, er.UnknownError, "copy result to *apires.{{.StructName}} error.", err)
+	}
+	return res, nil
+}
+
+// Generate from template
+func (s *{{.StructName}}Service) Create(req *apireq.Create{{.StructName}}) (err error) {
+	condition := &{{.ModelPackageName}}.{{.StructName}}{}
+	if err := copier.Copy(condition, req); err != nil {
+		return er.NewAppErr(500, er.UnknownError, "copy *apireq.{{.StructName}} to *apires.{{.StructName}} error.", err)
+	}
+	// 檢查是否已經存在
+	_, rows, err := s.repo.FindOne(condition)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return er.NewAppErr(500, er.UnknownError, "get {{.StructName}} error.", err)
+	}
+	if rows > 0 {
+		return er.NewAppErr(409, er.DataDuplicateError, "create {{.StructName}} duplicate error.", err)
+	}
+   	err = s.repo.Insert(condition)
+	if err != nil {
+		return  er.NewAppErr(500, er.UnknownError, "create {{.StructName}} db error.", err)
+	}
+	return nil
+}
+
+
+
+// Generate from template
+func (s *{{.StructName}}Service) Update(req *apireq.Update{{.StructName}}) (err error) {
+	condition := &{{.ModelPackageName}}.{{.StructName}}{Id: req.Id}
+	// 檢查 record 是否存在
+	_, rows, err := s.repo.FindOne(condition)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return er.NewAppErr(500, er.UnknownError, "get {{.StructName}} error.", err)
+	}
+	if err == gorm.ErrRecordNotFound {
+		return er.NewAppErr(404, er.UnknownError, "{{.StructName}} not found.", nil)
+	}
+	// 檢查更新後的是否存在
+	// 如果可重複這段要刪掉(Generate from template)
+	checkExist := new(models.{{.StructName}})
+	if err := copier.Copy(checkExist, req); err != nil {
+		return er.NewAppErr(500, er.UnknownError, "copy *apireq.{{.StructName}} to *models.{{.StructName}} error.", err)
+	}
+	_, rows, err = s.repo.FindOne(checkExist)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return er.NewAppErr(500, er.UnknownError, "get {{.StructName}} error.", err)
+	}
+	if rows > 0 {
+		return er.NewAppErr(409, er.DataDuplicateError, "update {{.StructName}} duplicate error.", err)
+	}
+    err = s.repo.Update(checkExist)
+	if err != nil {
+		return er.NewAppErr(500, er.UnknownError, "update {{.StructName}} db error.", err)
+	}
+	return nil
+}
+
+
+// Generate from template
+func (s *{{.StructName}}Service) Delete(req *apireq.Delete{{.StructName}}) (err error) {
+	condition := &{{.ModelPackageName}}.{{.StructName}}{Id: req.Id}
+	_, _, err = s.repo.FindOne(condition)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return er.NewAppErr(500, er.UnknownError, "get {{.StructName}} error.", err)
+	}
+	if err == gorm.ErrRecordNotFound {
+		return er.NewAppErr(404, er.UnknownError, "{{.StructName}} not found.", nil)
+	}
+    	err = s.repo.Delete(condition)
+	if err != nil {
+		return er.NewAppErr(500, er.UnknownError, "delete {{.StructName}} error.", err)
+	}
+	return nil
+}
+{{end}}

@@ -1,0 +1,41 @@
+{{define "apireq.tmpl"}} package apireq
+
+{{if .TimeField}}
+import "time"
+{{end}}
+
+type {{.StructName}} struct {
+   {{range .TableColumns}}{{.ModelField}} {{.Type}} `json:"{{.Tag}}"`
+   {{end}}
+}
+
+type List{{.StructName}} struct {
+   Page int64 `form:"page" binding:"required,min=1" json:"page"`
+   PerPage int64 `form:"per_page" binding:"required" json:"per_page"`
+}
+
+type List{{.StructName}}QueryCondition struct {
+   {{range .APIRequestColumns}}{{.ModelField}}Eq {{.Type}} `json:"{{.Tag}}" form:"{{.ColumnName}}_eq"`
+   {{end}}
+}
+
+type Get{{.StructName}}Detail struct {
+   Id int64 `uri:"id" form:"id" binding:"required" json:"id"`
+}
+
+type Create{{.StructName}} struct {
+   {{range .APIRequestColumns}}{{.ModelField}} {{.Type}} `json:"{{.Tag}}"`
+   {{end}}
+}
+
+
+type Update{{.StructName}} struct {
+   Id int64 `uri:"id" form:"id" binding:"required" json:"id"`
+   {{range .APIRequestColumns}}{{.ModelField}} {{.Type}} `json:"{{.Tag}}" binding:"required"`
+   {{end}}
+}
+
+type Delete{{.StructName}} struct {
+   Id int64 `uri:"id" form:"id" binding:"required" json:"id"`
+}
+{{end}}

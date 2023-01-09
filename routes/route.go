@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"example.com/m/config"
-	"example.com/m/driver"
+	"TaskList/config"
+	"TaskList/driver"
+
 	"github.com/gin-gonic/gin"
 )
 

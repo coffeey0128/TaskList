@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"example.com/m/routes"
+	"TaskList/routes"
 )
 
 func main() {
