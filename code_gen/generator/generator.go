@@ -174,9 +174,10 @@ func (g *Generator) CreateFolder() {
 	modelPath := BasePath + "/models/"
 	routePath := BasePath + "/routes/"
 	apiPath := BasePath + "/api/"
+	apiTestPath := BasePath + "/api_test/"
 	apireqPath := BasePath + "/models/apireq/"
 	apiresPath := BasePath + "/models/apires/"
-	paths := []string{internalPath, modelPath, routePath, apiPath, apireqPath, apiresPath}
+	paths := []string{internalPath, modelPath, routePath, apiPath, apiTestPath, apireqPath, apiresPath}
 	for _, path := range paths {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			err := os.MkdirAll(path, os.ModePerm)
@@ -257,7 +258,7 @@ func (g *Generator) LoadTemplates() {
 		apiPath := BasePath + "/api/" + g.TableName + "_api.go"
 		g.Templates[apiPath] = tmpl
 		testTmpl := template.Must(template.ParseFiles(API_TEST))
-		apiTestPath := BasePath + "/api_test/v1/" + g.TableName + "_test.go"
+		apiTestPath := BasePath + "/api_test/" + g.TableName + "_test.go"
 		g.Templates[apiTestPath] = testTmpl
 	}
 	if g.GenRoute {

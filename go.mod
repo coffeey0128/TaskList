@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.2
+	github.com/google/wire v0.5.0
 	github.com/joho/godotenv v1.4.0
 	github.com/stretchr/testify v1.8.1
 	gopkg.in/guregu/null.v4 v4.0.0
