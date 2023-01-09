@@ -1,0 +1,5 @@
+localhost:
+  dialect: mysql
+  datasource: root:secret@tcp(127.0.0.1:3306)/gogolook?parseTime=true
+  dir: migration
+  table: migrations
