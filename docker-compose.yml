@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0.28
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./migration:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: gogolook
+    networks:
+      - app-server-network
+
+  server:
+    build: .
+    container_name: server
+    working_dir: /server
+    ports:
+      - "8000:8000"
+    environment:
+      WAIT_HOSTS: mysql:3306
+      DB_HOST: db
+      GIN_MODE: release
+    networks:
+      - app-server-network
+
+networks:
+  app-server-network:
+
+volumes:
+  mysql-data:
