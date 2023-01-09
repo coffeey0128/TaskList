@@ -4,15 +4,12 @@ import (
 	"{{.ProjectName}}/models"
 	"{{.ProjectName}}/config"
 	"{{.ProjectName}}/driver"
-	"{{.ProjectName}}/pkg/awslib"
 	"{{.ProjectName}}/pkg/query_condition"
-	"{{.ProjectName}}/pkg/valider"
 	"log"
 	"os"
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/indochat/golib/logr"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
@@ -34,9 +31,6 @@ func setUp() {
 			log.Panicln(err)
 		}
 	}
-	_ = awslib.InitSess()
-	logr.InitGlobalLogger("")
-	valider.Init()
 }
 
 // Generate from template

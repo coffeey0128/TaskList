@@ -9,7 +9,6 @@ import (
 
 func {{.StructName}}V1(r *gin.Engine){
    v1 := r.Group("/v1")
-   v1.Use(middleware.AdminTokenAuth())
 
    // from generator
    v1.GET("/{{.APIRoute}}",api.List{{.StructName}})
