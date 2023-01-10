@@ -43,9 +43,9 @@ func TestServiceFindAll(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			mockTaskRepo.EXPECT().FindAll(gomock.Any(), gomock.Any(), gomock.Any()).Return(mockTasks, nil)
+			mockTaskRepo.EXPECT().FindAll().Return(mockTasks, nil)
 			mockTaskRepo.EXPECT().Count(gomock.Any()).Return(1, nil)
-			_, err := srvTask.FindAll(&apireq.ListTask{Page: test.page, PerPage: test.perPage}, test.queryCondition)
+			_, err := srvTask.FindAll()
 			assert.Nil(t, err)
 		})
 	}

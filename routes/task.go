@@ -2,11 +2,12 @@ package routes
 
 import (
 	"TaskList/api"
+
 	"github.com/gin-gonic/gin"
 )
 
 func TaskV1(r *gin.Engine) {
-	v1 := r.Group("/v1")
+	v1 := r.Group("")
 
 	// from generator
 	v1.GET("/tasks", api.ListTask)

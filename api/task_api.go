@@ -3,7 +3,7 @@ package api
 import (
 	"TaskList/models/apireq"
 	"TaskList/pkg/er"
-	"TaskList/pkg/query_condition"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,33 +14,14 @@ import (
 // @Tags Task
 // @Security Bearer
 // @Param Bearer header string true "Admin JWT Token"
-// @Param page query int true "Which Page"
-// @Param per_page query int true "How many data per page"
-// @Success 200 {object} apires.ListAllTask
+// @Success 200 {object} []apires.Task
 // @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
 // @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
-// @Router /v1/tasks [GET]
+// @Router /tasks [GET]
 func ListTask(c *gin.Context) {
-	req := &apireq.ListTask{}
-	if err := c.BindQuery(req); err != nil {
-		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
-		return
-	}
-
-	// need to change to what you want to query
-	var reqCondition apireq.ListTaskQueryCondition
-	if err := c.BindQuery(&reqCondition); err != nil {
-		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
-		return
-	}
-	queryCondition := query_condition.QueryCondition{Condition: reqCondition}
-
-	// need to dependency injection
 	srv := BuildTaskSrv()
-	res, err := srv.FindAll(req, queryCondition)
+	res, err := srv.FindAll()
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -61,7 +42,7 @@ func ListTask(c *gin.Context) {
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
 // @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
 // @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
-// @Router /v1/tasks/{id} [GET]
+// @Router /tasks/{id} [GET]
 func GetTaskDetail(c *gin.Context) {
 	req := &apireq.GetTaskDetail{}
 	err := c.BindUri(&req)
@@ -92,7 +73,7 @@ func GetTaskDetail(c *gin.Context) {
 // @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
 // @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
-// @Router /v1/tasks [POST]
+// @Router /tasks [POST]
 func CreateTask(c *gin.Context) {
 	req := &apireq.CreateTask{}
 	if err := c.Bind(req); err != nil {
@@ -107,7 +88,7 @@ func CreateTask(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	c.JSON(200, struct{}{})
+	c.JSON(201, struct{}{})
 }
 
 // UpdateTask
@@ -124,7 +105,7 @@ func CreateTask(c *gin.Context) {
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
 // @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
 // @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
-// @Router /v1/tasks/{id} [PUT]
+// @Router /tasks/{id} [PUT]
 func UpdateTask(c *gin.Context) {
 	req := &apireq.UpdateTask{}
 
@@ -158,7 +139,7 @@ func UpdateTask(c *gin.Context) {
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
 // @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
 // @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
-// @Router /v1/tasks/{id} [DELETE]
+// @Router /tasks/{id} [DELETE]
 func DeleteTask(c *gin.Context) {
 	req := &apireq.DeleteTask{}
 	err := c.BindUri(&req)

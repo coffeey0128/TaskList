@@ -5,14 +5,13 @@ import (
 	"TaskList/models/apireq"
 	"TaskList/models/apires"
 	"TaskList/pkg/er"
-	"TaskList/pkg/query_condition"
 
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
 type Service interface {
-	FindAll(req *apireq.ListTask, queryCondition query_condition.QueryCondition) (*apires.ListTask, error)
+	FindAll() (*apires.ListTask, error)
 	FindOne(req *apireq.GetTaskDetail) (*apires.Task, error)
 	Create(req *apireq.CreateTask) (err error)
 	Update(req *apireq.UpdateTask) (err error)
@@ -28,14 +27,10 @@ func NewTaskService(repo Repository) Service {
 }
 
 // Generate from template
-func (s *TaskService) FindAll(req *apireq.ListTask, queryCondition query_condition.QueryCondition) (*apires.ListTask, error) {
-	result, err := s.repo.FindAll(req.Page, req.PerPage, queryCondition)
+func (s *TaskService) FindAll() (*apires.ListTask, error) {
+	result, err := s.repo.FindAll()
 	if err != nil {
 		return nil, er.NewAppErr(500, er.UnknownError, "ListAll Task error.", err)
-	}
-	totalCount, err := s.repo.Count(queryCondition)
-	if err != nil {
-		return nil, er.NewAppErr(500, er.UnknownError, "Count Task error.", err)
 	}
 	// need to transform models to apires
 	results := make([]apires.Task, 0)
@@ -43,10 +38,7 @@ func (s *TaskService) FindAll(req *apireq.ListTask, queryCondition query_conditi
 		return nil, er.NewAppErr(500, er.UnknownError, "copy result to *apires.Task error.", err)
 	}
 	response := &apires.ListTask{
-		Tasks:       results,
-		CurrentPage: int(req.Page),
-		PerPage:     int(req.PerPage),
-		Total:       int(totalCount),
+		Tasks: results,
 	}
 	return response, nil
 }

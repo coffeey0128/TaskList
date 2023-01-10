@@ -1,0 +1,389 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/tasks": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "List Task 獲取全部 Task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin JWT Token",
+                        "name": "Bearer",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/apires.Task"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "{\"code\":\"400400\",\"message\":\"Wrong parameter format or invalid\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "401": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Unauthorized\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"code\":\"500000\",\"message\":\"Database unknown error\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Create Task 新增Task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin JWT Token",
+                        "name": "Bearer",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request 新增 Task",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/apireq.CreateTask"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"code\":\"400400\",\"message\":\"Wrong parameter format or invalid\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "401": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Unauthorized\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"code\":\"500000\",\"message\":\"Database unknown error\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "GetTaskDetail 獲取Task詳細資訊",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin JWT Token",
+                        "name": "Bearer",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "task_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/apires.Task"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"code\":\"400400\",\"message\":\"Wrong parameter format or invalid\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "401": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Unauthorized\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "404": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Data not found\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"code\":\"500000\",\"message\":\"Database unknown error\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Update Task 修改Task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin JWT Token",
+                        "name": "Bearer",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "task_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request 修改 Task",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/apireq.UpdateTask"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"code\":\"400400\",\"message\":\"Wrong parameter format or invalid\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "401": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Unauthorized\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "404": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Data not found\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"code\":\"500000\",\"message\":\"Database unknown error\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Delete Task 刪除Task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin JWT Token",
+                        "name": "Bearer",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "task_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"code\":\"400400\",\"message\":\"Wrong parameter format or invalid\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "401": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Unauthorized\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "404": {
+                        "description": "{\"code\":\"400401\",\"message\":\"Data not found\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"code\":\"500000\",\"message\":\"Database unknown error\"}",
+                        "schema": {
+                            "$ref": "#/definitions/er.AppErrorMsg"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "apireq.CreateTask": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "apireq.UpdateTask": {
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "apires.Task": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "er.AppErrorMsg": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -11,7 +11,7 @@ import (
 
 func main() {
 	r := routes.Init()
-	port := os.Getenv("PORT")
+	port := os.Getenv("SERVER_PORT")
 
 	// Interrupt handler.
 	var errChan = make(chan error, 1)

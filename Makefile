@@ -1,9 +1,11 @@
-.PHONY : run build
 run:
 	go run main.go
  
 build:
 	GOOS=linux GOARCH=amd64 go build -o main main.go
+
+doc:
+	swag init
 
 migrate-up:
 	docker exec mysql mysql -uroot -psecret -e \

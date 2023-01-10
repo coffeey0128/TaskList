@@ -65,18 +65,18 @@ func (mr *MockRepositoryMockRecorder) Delete(condition interface{}) *gomock.Call
 }
 
 // FindAll mocks base method.
-func (m *MockRepository) FindAll(page, perPage int64, queryCondition query_condition.QueryCondition) ([]*models.Task, error) {
+func (m *MockRepository) FindAll() ([]*models.Task, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindAll", page, perPage, queryCondition)
+	ret := m.ctrl.Call(m, "FindAll")
 	ret0, _ := ret[0].([]*models.Task)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindAll indicates an expected call of FindAll.
-func (mr *MockRepositoryMockRecorder) FindAll(page, perPage, queryCondition interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) FindAll() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockRepository)(nil).FindAll), page, perPage, queryCondition)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockRepository)(nil).FindAll))
 }
 
 // FindOne mocks base method.

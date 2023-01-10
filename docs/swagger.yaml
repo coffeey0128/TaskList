@@ -1,0 +1,249 @@
+definitions:
+  apireq.CreateTask:
+    properties:
+      name:
+        type: string
+      status:
+        type: integer
+    type: object
+  apireq.UpdateTask:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      status:
+        type: integer
+    required:
+    - id
+    - name
+    - status
+    type: object
+  apires.Task:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      status:
+        type: integer
+    type: object
+  er.AppErrorMsg:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Admin JWT Token
+        in: header
+        name: Bearer
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/apires.Task'
+            type: array
+        "400":
+          description: '{"code":"400400","message":"Wrong parameter format or invalid"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "401":
+          description: '{"code":"400401","message":"Unauthorized"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "500":
+          description: '{"code":"500000","message":"Database unknown error"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+      security:
+      - Bearer: []
+      summary: List Task 獲取全部 Task
+      tags:
+      - Task
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Admin JWT Token
+        in: header
+        name: Bearer
+        required: true
+        type: string
+      - description: Request 新增 Task
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/apireq.CreateTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{}'
+          schema:
+            type: string
+        "400":
+          description: '{"code":"400400","message":"Wrong parameter format or invalid"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "401":
+          description: '{"code":"400401","message":"Unauthorized"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "500":
+          description: '{"code":"500000","message":"Database unknown error"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+      security:
+      - Bearer: []
+      summary: Create Task 新增Task
+      tags:
+      - Task
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Admin JWT Token
+        in: header
+        name: Bearer
+        required: true
+        type: string
+      - description: task_id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{}'
+          schema:
+            type: string
+        "400":
+          description: '{"code":"400400","message":"Wrong parameter format or invalid"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "401":
+          description: '{"code":"400401","message":"Unauthorized"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "404":
+          description: '{"code":"400401","message":"Data not found"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "500":
+          description: '{"code":"500000","message":"Database unknown error"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+      security:
+      - Bearer: []
+      summary: Delete Task 刪除Task
+      tags:
+      - Task
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Admin JWT Token
+        in: header
+        name: Bearer
+        required: true
+        type: string
+      - description: task_id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apires.Task'
+        "400":
+          description: '{"code":"400400","message":"Wrong parameter format or invalid"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "401":
+          description: '{"code":"400401","message":"Unauthorized"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "404":
+          description: '{"code":"400401","message":"Data not found"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "500":
+          description: '{"code":"500000","message":"Database unknown error"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+      security:
+      - Bearer: []
+      summary: GetTaskDetail 獲取Task詳細資訊
+      tags:
+      - Task
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Admin JWT Token
+        in: header
+        name: Bearer
+        required: true
+        type: string
+      - description: task_id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request 修改 Task
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/apireq.UpdateTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{}'
+          schema:
+            type: string
+        "400":
+          description: '{"code":"400400","message":"Wrong parameter format or invalid"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "401":
+          description: '{"code":"400401","message":"Unauthorized"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "404":
+          description: '{"code":"400401","message":"Data not found"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+        "500":
+          description: '{"code":"500000","message":"Database unknown error"}'
+          schema:
+            $ref: '#/definitions/er.AppErrorMsg'
+      security:
+      - Bearer: []
+      summary: Update Task 修改Task
+      tags:
+      - Task
+swagger: "2.0"
