@@ -35,7 +35,7 @@ func setUp() {
 
 // Generate from template
 func TestRepoInsert(t *testing.T) {
-	gormEngine, _ := driver.NewGorm()
+	gormEngine := driver.InitGorm()
 	repo := New{{.StructName}}Repo(gormEngine)
 	//自行填入struct
 	condition :=&models.{{.StructName}}{}
@@ -49,7 +49,7 @@ func TestRepoInsert(t *testing.T) {
 
 // Generate from template
 func TestRepoFindAll(t *testing.T) {
-	gormEngine, _ := driver.NewGorm()
+	gormEngine := driver.InitGorm()
 	repo := New{{.StructName}}Repo(gormEngine)
 	var queryCondition query_condition.QueryCondition
 	// 自行接response測試
@@ -59,7 +59,7 @@ func TestRepoFindAll(t *testing.T) {
 
 // Generate from template
 func TestRepoFindOne(t *testing.T) {
-	gormEngine, _ := driver.NewGorm()
+	gormEngine := driver.InitGorm()
 	repo := New{{.StructName}}Repo(gormEngine)
 	// 自行接response測試
 	_,_,err := repo.FindOne(&models.{{.StructName}}{Id:1})
@@ -68,7 +68,7 @@ func TestRepoFindOne(t *testing.T) {
 
 // Generate from template
 func TestRepoUpdate(t *testing.T) {
-	gormEngine, _ := driver.NewGorm()
+	gormEngine := driver.InitGorm()
 	repo := New{{.StructName}}Repo(gormEngine)
 	//自行填入struct
 	condition :=&models.{{.StructName}}{}
@@ -79,7 +79,7 @@ func TestRepoUpdate(t *testing.T) {
 
 // Generate from template
 func TestRepoDelete(t *testing.T) {
-	gormEngine, _ := driver.NewGorm()
+	gormEngine := driver.InitGorm()
 	repo := New{{.StructName}}Repo(gormEngine)
 	//自行填入struct
 	condition :=&models.{{.StructName}}{}
@@ -91,7 +91,7 @@ func TestRepoDelete(t *testing.T) {
 
 // Generate from template
 func TestRepoCount(t *testing.T) {
-	gormEngine, _ := driver.NewGorm()
+	gormEngine := driver.InitGorm()
 	repo := New{{.StructName}}Repo(gormEngine)
 	var queryCondition query_condition.QueryCondition
 	// 自行接response測試

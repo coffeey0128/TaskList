@@ -5,6 +5,7 @@ const (
 	UnauthorizedError     = 400401
 	ForbiddenError        = 400403
 	ResourceNotFoundError = 400404
+	DataDuplicateError    = 400410
 	UnknownError          = 500000
 	DBInsertError         = 500001
 	DBUpdateError         = 500002

@@ -4,7 +4,10 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.2
+	github.com/go-sql-driver/mysql v1.7.0
+	github.com/golang/mock v1.6.0
 	github.com/google/wire v0.5.0
+	github.com/jinzhu/copier v0.3.5
 	github.com/joho/godotenv v1.4.0
 	github.com/stretchr/testify v1.8.1
 	gopkg.in/guregu/null.v4 v4.0.0
@@ -18,7 +21,6 @@ require (
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
-	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -35,7 +37,6 @@ require (
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

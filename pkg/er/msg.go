@@ -5,6 +5,7 @@ var msg = map[int]string{
 	UnauthorizedError:     "Unauthorized",
 	ForbiddenError:        "Forbidden error",
 	ResourceNotFoundError: "Resource not found",
+	DataDuplicateError:    "Data duplicate error",
 	UnknownError:          "Database Unknown error",
 	DBInsertError:         "Database insertion error",
 	DBUpdateError:         "Database update error",
