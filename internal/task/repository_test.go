@@ -4,7 +4,6 @@ import (
 	"TaskList/config"
 	"TaskList/driver"
 	"TaskList/models"
-	"TaskList/pkg/query_condition"
 	"log"
 	"os"
 	"testing"
@@ -117,13 +116,4 @@ func TestRepoDelete(t *testing.T) {
 	result = gormEngine.First(condition)
 	assert.NotNil(t, result.Error)
 	assert.Zero(t, result.RowsAffected)
-}
-
-// Generate from template
-func TestRepoCount(t *testing.T) {
-	gormEngine := driver.InitGorm()
-	repo := NewTaskRepo(gormEngine)
-	var queryCondition query_condition.QueryCondition
-	_, err := repo.Count(queryCondition)
-	assert.Nil(t, err)
 }

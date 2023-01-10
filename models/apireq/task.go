@@ -21,14 +21,14 @@ type GetTaskDetail struct {
 }
 
 type CreateTask struct {
-	Name   string `json:"name"`
+	Name   string `json:"name" binding:"required"`
 	Status int    `json:"status"`
 }
 
 type UpdateTask struct {
-	Id     int    `uri:"id" form:"id" binding:"required" json:"id"`
+	Id     int    `uri:"id" form:"id" binding:"required" swaggerignore:"true" json:"id"`
 	Name   string `json:"name" binding:"required"`
-	Status int    `json:"status" binding:"required"`
+	Status *int   `json:"status" binding:"required,oneof=0 1"`
 }
 
 type DeleteTask struct {

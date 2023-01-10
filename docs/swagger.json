@@ -222,6 +222,9 @@
     "definitions": {
         "apireq.CreateTask": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -234,14 +237,10 @@
         "apireq.UpdateTask": {
             "type": "object",
             "required": [
-                "id",
                 "name",
                 "status"
             ],
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },

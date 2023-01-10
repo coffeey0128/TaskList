@@ -15,6 +15,7 @@ migrate-up:
 migrate-down:
 	sql-migrate down -config=./migration/dbconfig.yml --env=localhost
 
+
 seed-flush:
 	# flush mysql
 	docker exec mysql mysql -uroot -psecret -e \
@@ -24,11 +25,15 @@ seed-flush:
 	go run ./cmd/seeder/main.go	
 
 test:
-	gp test ./...
+	go test -v ./...
+
+testf: seed-flush test
+
+start: migrate-up seed-flush doc run
 
 gen-mock:
 	mockgen -source=./internal/task/repository.go -destination=./mock/task/repository.go -package=mock_task
 
 gen-crud:
-	go run ./code_gen/main.go && wire ./api . && make gen-mock && go fmt ./...
+	go run ./code_gen/main.go && wire ./api . && make gen-mock
 	

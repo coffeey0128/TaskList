@@ -66,7 +66,7 @@ func (s *TaskService) Create(req *apireq.CreateTask) (res *models.Task, err erro
 		return nil, er.NewAppErr(500, er.UnknownError, "copy *apireq.Task to *apires.Task error.", err)
 	}
 	if req.Status != StatusComplete && req.Status != StatusIncomplete {
-		return nil, er.NewAppErr(500, er.UnknownError, "create task status error.", err)
+		return nil, er.NewAppErr(400, er.ErrorParamInvalid, "create task status error.", err)
 	}
 	// 檢查是否已經存在，但題目沒有規定不可重複，先註解掉
 	// _, rows, err := s.repo.FindOne(condition)
@@ -110,7 +110,7 @@ func (s *TaskService) Update(req *apireq.UpdateTask) (res *models.Task, err erro
 	result := &models.Task{
 		Id:     req.Id,
 		Name:   req.Name,
-		Status: req.Status,
+		Status: *req.Status,
 	}
 	err = s.repo.Update(result)
 	if err != nil {
@@ -127,7 +127,7 @@ func (s *TaskService) Delete(req *apireq.DeleteTask) (err error) {
 		return er.NewAppErr(500, er.UnknownError, "get Task error.", err)
 	}
 	if err == gorm.ErrRecordNotFound {
-		return er.NewAppErr(404, er.UnknownError, "Task not found.", nil)
+		return er.NewAppErr(400, er.ResourceNotFoundError, "Task not found.", nil)
 	}
 	err = s.repo.Delete(condition)
 	if err != nil {

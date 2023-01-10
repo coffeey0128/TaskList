@@ -242,6 +242,9 @@ var doc = `{
     "definitions": {
         "apireq.CreateTask": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -254,14 +257,10 @@ var doc = `{
         "apireq.UpdateTask": {
             "type": "object",
             "required": [
-                "id",
                 "name",
                 "status"
             ],
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },

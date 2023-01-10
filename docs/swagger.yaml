@@ -5,17 +5,16 @@ definitions:
         type: string
       status:
         type: integer
+    required:
+    - name
     type: object
   apireq.UpdateTask:
     properties:
-      id:
-        type: integer
       name:
         type: string
       status:
         type: integer
     required:
-    - id
     - name
     - status
     type: object

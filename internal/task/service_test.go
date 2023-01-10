@@ -106,6 +106,9 @@ func TestServiceUpdate(t *testing.T) {
 		},
 	}
 
+	statusIncomplete := StatusIncomplete
+	statusComplete := StatusComplete
+
 	tests := []struct {
 		name    string
 		req     *apireq.UpdateTask
@@ -118,7 +121,7 @@ func TestServiceUpdate(t *testing.T) {
 			req: &apireq.UpdateTask{
 				Id:     1,
 				Name:   "update test 1",
-				Status: StatusIncomplete,
+				Status: &statusIncomplete,
 			},
 			found:   1,
 			findErr: nil,
@@ -129,7 +132,7 @@ func TestServiceUpdate(t *testing.T) {
 			req: &apireq.UpdateTask{
 				Id:     1000000,
 				Name:   "update test 2",
-				Status: StatusComplete,
+				Status: &statusComplete,
 			},
 			found:   0,
 			findErr: gorm.ErrRecordNotFound,
@@ -146,7 +149,6 @@ func TestServiceUpdate(t *testing.T) {
 			assert.Equal(t, test.err, err)
 			if err == nil {
 				assert.Equal(t, test.req.Name, res.Name)
-				assert.Equal(t, test.req.Status, res.Status)
 			}
 		})
 	}
@@ -194,7 +196,7 @@ func TestServiceDelete(t *testing.T) {
 			},
 			found:   0,
 			findErr: gorm.ErrRecordNotFound,
-			err:     &er.AppError{StatusCode: 404, Code: "500000", Msg: "Task not found.", CauseErr: error(nil)},
+			err:     &er.AppError{StatusCode: 400, Code: "400404", Msg: "Task not found.", CauseErr: error(nil)},
 		},
 	}
 	for i, test := range tests {

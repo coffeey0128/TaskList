@@ -71,7 +71,7 @@ func CreateTask(c *gin.Context) {
 func UpdateTask(c *gin.Context) {
 	req := &apireq.UpdateTask{}
 
-	_ = c.Bind(req)
+	_ = c.ShouldBind(req)
 	err := c.BindUri(&req)
 	if err != nil {
 		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
