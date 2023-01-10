@@ -8,10 +8,10 @@ import (
 /*
 EXAMPLE:
 
-type RequestCondition struct {
-	NameEq string `form:"lucky_draw_number_eq"`
-	PhoneEq string `form:"phone_eq" sql_column_name:"mobile"`
-}
+	type RequestCondition struct {
+		NameEq string `form:"lucky_draw_number_eq"`
+		PhoneEq string `form:"phone_eq" sql_column_name:"mobile"`
+	}
 
 var reqCondition RequestCondition
 c.BindQuery(&reqCondition)  // c is *gin.Context
@@ -52,7 +52,7 @@ func (q *QueryCondition) ToSQL() string {
 	return builder.String()
 }
 
-//for map[string]interface{}
+// for map[string]interface{}
 func (q *QueryCondition) parseSimpleFieldToNode(fieldName string, value interface{}) Node {
 	var node = Node{}
 	underscoreFieldName := toSnakeCase(fieldName) // UserNameEq => user_name_eq

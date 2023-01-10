@@ -5,6 +5,7 @@ import (
    "{{.ProjectName}}/models/apires"
 	"encoding/json"
 	"fmt"
+	"bytes"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -15,8 +16,7 @@ import (
 func TestListAll{{.StructName}}(t *testing.T) {
 	t.Run("List All {{.StructName}}", func(t *testing.T) {
 		path := fmt.Sprintf("/{{.APIRoute}}?name_like=%s&page=%d&per_page=%d", "", 1, 10)
-		request := newSignedInRequest(signedUser.Id, http.MethodGet, path, nil)
-
+		request, _ := http.NewRequest(http.MethodGet, path, nil)
 		response := httptest.NewRecorder()
 		route.ServeHTTP(response, request)
 
@@ -35,8 +35,7 @@ func TestListAll{{.StructName}}(t *testing.T) {
 func TestGet{{.StructName}}Detail(t *testing.T) {
 	t.Run("Get {{.StructName}} detail", func(t *testing.T) {
 		path := fmt.Sprintf("/{{.APIRoute}}/%d", 1)
-		request := newSignedInRequest(signedUser.Id, http.MethodGet, path, nil)
-
+		request, _ := http.NewRequest(http.MethodGet, path, nil)
 		response := httptest.NewRecorder()
 		route.ServeHTTP(response, request)
 
@@ -73,7 +72,7 @@ func TestCreate{{.StructName}}(t *testing.T) {
                t.Fatal(err)
             }
             path := fmt.Sprintf("/{{.APIRoute}}")
-            request := newSignedInRequest(signedUser.Id, http.MethodPost, path, body)
+            request, _ := http.NewRequest(http.MethodPost, path, bytes.NewBuffer(body))
             response := httptest.NewRecorder()
             request.Header.Add("Content-type", "application/json")
             route.ServeHTTP(response, request)
@@ -105,11 +104,10 @@ func TestUpdate{{.StructName}}(t *testing.T) {
                t.Fatal(err)
             }
             path := fmt.Sprintf("/{{.APIRoute}}/%d",1)
-            request := newSignedInRequest(signedUser.Id, http.MethodPut, path, body)
+            request, _ := http.NewRequest(http.MethodPut, path, bytes.NewBuffer(body))
             response := httptest.NewRecorder()
             request.Header.Add("Content-type", "application/json")
             route.ServeHTTP(response, request)
-
             assert.Equal(t, test.responseCode, response.Code)
             assert.Equal(t, test.response, response.Body.String())
       })
@@ -131,11 +129,10 @@ func TestDelete{{.StructName}}(t *testing.T) {
 	for _, test := range tests {
       t.Run(fmt.Sprintf("Delete {{.StructName}} %s",test.name), func(t *testing.T) {
             path := fmt.Sprintf("/{{.APIRoute}}/%d",1)
-            request := newSignedInRequest(signedUser.Id, http.MethodDelete, path, nil)
+            request, _ := http.NewRequest(http.MethodDelete, path, nil)
             response := httptest.NewRecorder()
             request.Header.Add("Content-type", "application/json")
             route.ServeHTTP(response, request)
-
             assert.Equal(t, test.responseCode, response.Code)
             assert.Equal(t, test.response, response.Body.String())
       })
