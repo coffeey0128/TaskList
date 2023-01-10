@@ -29,7 +29,7 @@ test:
 
 testf: seed-flush test
 
-start: migrate-up seed-flush doc run
+init: migrate-up seed-flush doc
 
 gen-mock:
 	mockgen -source=./internal/task/repository.go -destination=./mock/task/repository.go -package=mock_task
