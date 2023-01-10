@@ -26,11 +26,6 @@ var doc = `{
     "paths": {
         "/tasks": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -41,15 +36,6 @@ var doc = `{
                     "Task"
                 ],
                 "summary": "List Task 獲取全部 Task",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Admin JWT Token",
-                        "name": "Bearer",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -81,11 +67,6 @@ var doc = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -98,13 +79,6 @@ var doc = `{
                 "summary": "Create Task 新增Task",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Admin JWT Token",
-                        "name": "Bearer",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "Request 新增 Task",
                         "name": "Body",
                         "in": "body",
@@ -116,7 +90,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{}",
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }
@@ -143,71 +117,6 @@ var doc = `{
             }
         },
         "/tasks/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Task"
-                ],
-                "summary": "GetTaskDetail 獲取Task詳細資訊",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Admin JWT Token",
-                        "name": "Bearer",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "task_id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/apires.Task"
-                        }
-                    },
-                    "400": {
-                        "description": "{\"code\":\"400400\",\"message\":\"Wrong parameter format or invalid\"}",
-                        "schema": {
-                            "$ref": "#/definitions/er.AppErrorMsg"
-                        }
-                    },
-                    "401": {
-                        "description": "{\"code\":\"400401\",\"message\":\"Unauthorized\"}",
-                        "schema": {
-                            "$ref": "#/definitions/er.AppErrorMsg"
-                        }
-                    },
-                    "404": {
-                        "description": "{\"code\":\"400401\",\"message\":\"Data not found\"}",
-                        "schema": {
-                            "$ref": "#/definitions/er.AppErrorMsg"
-                        }
-                    },
-                    "500": {
-                        "description": "{\"code\":\"500000\",\"message\":\"Database unknown error\"}",
-                        "schema": {
-                            "$ref": "#/definitions/er.AppErrorMsg"
-                        }
-                    }
-                }
-            },
             "put": {
                 "security": [
                     {
@@ -225,13 +134,6 @@ var doc = `{
                 ],
                 "summary": "Update Task 修改Task",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Admin JWT Token",
-                        "name": "Bearer",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "task_id",
@@ -251,7 +153,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{}",
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }
@@ -283,11 +185,6 @@ var doc = `{
                 }
             },
             "delete": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -299,13 +196,6 @@ var doc = `{
                 ],
                 "summary": "Delete Task 刪除Task",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Admin JWT Token",
-                        "name": "Bearer",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "task_id",

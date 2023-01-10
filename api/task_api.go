@@ -60,7 +60,6 @@ func CreateTask(c *gin.Context) {
 // @Accept json
 // @Tags Task
 // @Security Bearer
-// @Param Bearer header string true "Admin JWT Token"
 // @Param id path int true "task_id"
 // @Param Body body apireq.UpdateTask true "Request 修改 Task"
 // @Success 200 {string} models.Task
@@ -93,8 +92,6 @@ func UpdateTask(c *gin.Context) {
 // @Produce json
 // @Accept json
 // @Tags Task
-// @Security Bearer
-// @Param Bearer header string true "Admin JWT Token"
 // @Param id path int true "task_id"
 // @Success 200 {string} string "{}"
 // @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"

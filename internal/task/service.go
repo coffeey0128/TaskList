@@ -65,6 +65,9 @@ func (s *TaskService) Create(req *apireq.CreateTask) (res *models.Task, err erro
 	if err := copier.Copy(condition, req); err != nil {
 		return nil, er.NewAppErr(500, er.UnknownError, "copy *apireq.Task to *apires.Task error.", err)
 	}
+	if req.Status != StatusComplete && req.Status != StatusIncomplete {
+		return nil, er.NewAppErr(500, er.UnknownError, "create task status error.", err)
+	}
 	// 檢查是否已經存在，但題目沒有規定不可重複，先註解掉
 	// _, rows, err := s.repo.FindOne(condition)
 	// if err != nil && err != gorm.ErrRecordNotFound {

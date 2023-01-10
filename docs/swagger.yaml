@@ -42,12 +42,6 @@ paths:
     get:
       consumes:
       - application/json
-      parameters:
-      - description: Admin JWT Token
-        in: header
-        name: Bearer
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -69,8 +63,6 @@ paths:
           description: '{"code":"500000","message":"Database unknown error"}'
           schema:
             $ref: '#/definitions/er.AppErrorMsg'
-      security:
-      - Bearer: []
       summary: List Task 獲取全部 Task
       tags:
       - Task
@@ -78,11 +70,6 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Admin JWT Token
-        in: header
-        name: Bearer
-        required: true
-        type: string
       - description: Request 新增 Task
         in: body
         name: Body
@@ -93,7 +80,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{}'
+          description: OK
           schema:
             type: string
         "400":
@@ -108,8 +95,6 @@ paths:
           description: '{"code":"500000","message":"Database unknown error"}'
           schema:
             $ref: '#/definitions/er.AppErrorMsg'
-      security:
-      - Bearer: []
       summary: Create Task 新增Task
       tags:
       - Task
@@ -118,11 +103,6 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Admin JWT Token
-        in: header
-        name: Bearer
-        required: true
-        type: string
       - description: task_id
         in: path
         name: id
@@ -151,62 +131,13 @@ paths:
           description: '{"code":"500000","message":"Database unknown error"}'
           schema:
             $ref: '#/definitions/er.AppErrorMsg'
-      security:
-      - Bearer: []
       summary: Delete Task 刪除Task
-      tags:
-      - Task
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Admin JWT Token
-        in: header
-        name: Bearer
-        required: true
-        type: string
-      - description: task_id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/apires.Task'
-        "400":
-          description: '{"code":"400400","message":"Wrong parameter format or invalid"}'
-          schema:
-            $ref: '#/definitions/er.AppErrorMsg'
-        "401":
-          description: '{"code":"400401","message":"Unauthorized"}'
-          schema:
-            $ref: '#/definitions/er.AppErrorMsg'
-        "404":
-          description: '{"code":"400401","message":"Data not found"}'
-          schema:
-            $ref: '#/definitions/er.AppErrorMsg'
-        "500":
-          description: '{"code":"500000","message":"Database unknown error"}'
-          schema:
-            $ref: '#/definitions/er.AppErrorMsg'
-      security:
-      - Bearer: []
-      summary: GetTaskDetail 獲取Task詳細資訊
       tags:
       - Task
     put:
       consumes:
       - application/json
       parameters:
-      - description: Admin JWT Token
-        in: header
-        name: Bearer
-        required: true
-        type: string
       - description: task_id
         in: path
         name: id
@@ -222,7 +153,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{}'
+          description: OK
           schema:
             type: string
         "400":
