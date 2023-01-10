@@ -16,8 +16,8 @@ var count = 0
 
 func AllTask() []Seed {
 	var tasks []Seed
-	tasks = append(tasks, taskGenerator(5, task.StatusComplete)...)
 	tasks = append(tasks, taskGenerator(5, task.StatusIncomplete)...)
+	tasks = append(tasks, taskGenerator(5, task.StatusComplete)...)
 	count = 0
 	return tasks
 }
@@ -32,7 +32,7 @@ func taskGenerator(needCount, status int) []Seed {
 				count++
 				return CreateTask(orm, models.Task{
 					Name:   fmt.Sprintf("task %d", count),
-					Status: int64(status),
+					Status: status,
 				})
 			},
 		})

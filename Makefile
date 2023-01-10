@@ -23,6 +23,9 @@ seed-flush:
 	# exec seeder
 	go run ./cmd/seeder/main.go	
 
+test:
+	gp test ./...
+
 gen-mock:
 	mockgen -source=./internal/task/repository.go -destination=./mock/task/repository.go -package=mock_task
 

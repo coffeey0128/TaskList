@@ -12,8 +12,6 @@ import (
 // @Produce json
 // @Accept json
 // @Tags Task
-// @Security Bearer
-// @Param Bearer header string true "Admin JWT Token"
 // @Success 200 {object} []apires.Task
 // @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
@@ -29,47 +27,13 @@ func ListTask(c *gin.Context) {
 	c.JSON(200, res)
 }
 
-// GetTaskDetail
-// @Summary GetTaskDetail 獲取Task詳細資訊
-// @Produce json
-// @Accept json
-// @Tags Task
-// @Security Bearer
-// @Param Bearer header string true "Admin JWT Token"
-// @Param id path int true "task_id"
-// @Success 200 {object} apires.Task
-// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
-// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
-// @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
-// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
-// @Router /tasks/{id} [GET]
-func GetTaskDetail(c *gin.Context) {
-	req := &apireq.GetTaskDetail{}
-	err := c.BindUri(&req)
-	if err != nil {
-		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
-		return
-	}
-	// need to dependency injection
-	srv := BuildTaskSrv()
-	res, err := srv.FindOne(req)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-	c.JSON(200, res)
-}
-
 // CreateTask
 // @Summary Create Task 新增Task
 // @Produce json
 // @Accept json
 // @Tags Task
-// @Security Bearer
-// @Param Bearer header string true "Admin JWT Token"
 // @Param Body body apireq.CreateTask true "Request 新增 Task"
-// @Success 200 {string} string "{}"
+// @Success 200 {string} models.Task
 // @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
 // @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
@@ -81,14 +45,13 @@ func CreateTask(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	// need to dependency injection
 	srv := BuildTaskSrv()
-	err := srv.Create(req)
+	res, err := srv.Create(req)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
-	c.JSON(201, struct{}{})
+	c.JSON(201, res)
 }
 
 // UpdateTask
@@ -100,7 +63,7 @@ func CreateTask(c *gin.Context) {
 // @Param Bearer header string true "Admin JWT Token"
 // @Param id path int true "task_id"
 // @Param Body body apireq.UpdateTask true "Request 修改 Task"
-// @Success 200 {string} string "{}"
+// @Success 200 {string} models.Task
 // @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
 // @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
 // @Failure 404 {object} er.AppErrorMsg "{"code":"400401","message":"Data not found"}"
@@ -116,14 +79,13 @@ func UpdateTask(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	// need to dependency injection
 	srv := BuildTaskSrv()
-	err = srv.Update(req)
+	res, err := srv.Update(req)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
-	c.JSON(200, struct{}{})
+	c.JSON(200, res)
 }
 
 // DeleteTask
@@ -148,7 +110,6 @@ func DeleteTask(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	// need to dependency injection
 	srv := BuildTaskSrv()
 	err = srv.Delete(req)
 	if err != nil {

@@ -13,8 +13,8 @@ import (
 type Service interface {
 	FindAll() (*apires.ListTask, error)
 	FindOne(req *apireq.GetTaskDetail) (*apires.Task, error)
-	Create(req *apireq.CreateTask) (err error)
-	Update(req *apireq.UpdateTask) (err error)
+	Create(req *apireq.CreateTask) (res *models.Task, err error)
+	Update(req *apireq.UpdateTask) (res *models.Task, err error)
 	Delete(req *apireq.DeleteTask) (err error)
 }
 
@@ -38,7 +38,7 @@ func (s *TaskService) FindAll() (*apires.ListTask, error) {
 		return nil, er.NewAppErr(500, er.UnknownError, "copy result to *apires.Task error.", err)
 	}
 	response := &apires.ListTask{
-		Tasks: results,
+		Result: results,
 	}
 	return response, nil
 }
@@ -60,55 +60,60 @@ func (s *TaskService) FindOne(req *apireq.GetTaskDetail) (*apires.Task, error) {
 }
 
 // Generate from template
-func (s *TaskService) Create(req *apireq.CreateTask) (err error) {
+func (s *TaskService) Create(req *apireq.CreateTask) (res *models.Task, err error) {
 	condition := &models.Task{}
 	if err := copier.Copy(condition, req); err != nil {
-		return er.NewAppErr(500, er.UnknownError, "copy *apireq.Task to *apires.Task error.", err)
+		return nil, er.NewAppErr(500, er.UnknownError, "copy *apireq.Task to *apires.Task error.", err)
 	}
-	// 檢查是否已經存在
-	_, rows, err := s.repo.FindOne(condition)
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return er.NewAppErr(500, er.UnknownError, "get Task error.", err)
-	}
-	if rows > 0 {
-		return er.NewAppErr(409, er.DataDuplicateError, "create Task duplicate error.", err)
-	}
+	// 檢查是否已經存在，但題目沒有規定不可重複，先註解掉
+	// _, rows, err := s.repo.FindOne(condition)
+	// if err != nil && err != gorm.ErrRecordNotFound {
+	// 	return er.NewAppErr(500, er.UnknownError, "get Task error.", err)
+	// }
+	// if rows > 0 {
+	// 	return er.NewAppErr(409, er.DataDuplicateError, "create Task duplicate error.", err)
+	// }
 	err = s.repo.Insert(condition)
 	if err != nil {
-		return er.NewAppErr(500, er.UnknownError, "create Task db error.", err)
+		return nil, er.NewAppErr(500, er.UnknownError, "create Task db error.", err)
 	}
-	return nil
+	return condition, nil
 }
 
 // Generate from template
-func (s *TaskService) Update(req *apireq.UpdateTask) (err error) {
+func (s *TaskService) Update(req *apireq.UpdateTask) (res *models.Task, err error) {
 	condition := &models.Task{Id: req.Id}
 	// 檢查 record 是否存在
-	_, rows, err := s.repo.FindOne(condition)
+	_, _, err = s.repo.FindOne(condition)
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return er.NewAppErr(500, er.UnknownError, "get Task error.", err)
+		return nil, er.NewAppErr(500, er.UnknownError, "get Task error.", err)
 	}
 	if err == gorm.ErrRecordNotFound {
-		return er.NewAppErr(404, er.UnknownError, "Task not found.", nil)
+		return nil, er.NewAppErr(404, er.UnknownError, "Task not found.", nil)
 	}
 	// 檢查更新後的是否存在
-	// 如果可重複這段要刪掉(Generate from template)
-	checkExist := new(models.Task)
-	if err := copier.Copy(checkExist, req); err != nil {
-		return er.NewAppErr(500, er.UnknownError, "copy *apireq.Task to *models.Task error.", err)
+	// 因為可重複這段註解
+	// checkExist := new(models.Task)
+	// if err := copier.Copy(checkExist, req); err != nil {
+	// 	return er.NewAppErr(500, er.UnknownError, "copy *apireq.Task to *models.Task error.", err)
+	// }
+	// _, rows, err := s.repo.FindOne(checkExist)
+	// if err != nil && err != gorm.ErrRecordNotFound {
+	// 	return er.NewAppErr(500, er.UnknownError, "get Task error.", err)
+	// }
+	// if rows > 0 {
+	// 	return er.NewAppErr(409, er.DataDuplicateError, "update Task duplicate error.", err)
+	// }
+	result := &models.Task{
+		Id:     req.Id,
+		Name:   req.Name,
+		Status: req.Status,
 	}
-	_, rows, err = s.repo.FindOne(checkExist)
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return er.NewAppErr(500, er.UnknownError, "get Task error.", err)
-	}
-	if rows > 0 {
-		return er.NewAppErr(409, er.DataDuplicateError, "update Task duplicate error.", err)
-	}
-	err = s.repo.Update(checkExist)
+	err = s.repo.Update(result)
 	if err != nil {
-		return er.NewAppErr(500, er.UnknownError, "update Task db error.", err)
+		return nil, er.NewAppErr(500, er.UnknownError, "update Task db error.", err)
 	}
-	return nil
+	return result, nil
 }
 
 // Generate from template
