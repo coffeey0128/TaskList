@@ -22,7 +22,6 @@ seed-flush:
 	go run ./cmd/seeder/main.go	
 
 gen-mock:
-	mockgen -source=./internal/task/repository.go -destination=./mock/task/task_repository_mock.go -package=task_mock
 
 gen-crud:
 	go run ./code_gen/main.go
