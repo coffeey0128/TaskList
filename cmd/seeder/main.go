@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"TaskList/config"
+	"TaskList/driver"
 	"TaskList/pkg/seeds"
 
 	"gorm.io/gorm"
@@ -11,7 +12,10 @@ import (
 
 func main() {
 	config.InitEnv()
-	//orm := driver.InitGorm()
+	orm := driver.InitGorm()
+	// Create Tasks ----------------------------------------------------------------
+	taskSeeds := seeds.AllTask()
+	run(orm, taskSeeds)
 
 }
 
@@ -20,8 +24,7 @@ func run(orm *gorm.DB, channelSeeds []seeds.Seed) {
 		fmt.Println(seed.Name)
 		err := seed.Run(orm)
 		if err != nil {
-			fmt.Println(seed.Name + " Failed")
-			fmt.Println(err.Error())
+			fmt.Println(seed.Name+" Failed: ", err.Error())
 		}
 	}
 }
